@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REPO = "zorochan/bank-app"
+        DOCKER_REPO = "mdkhursheed/bank-app"
     }
 
     stages {
@@ -15,7 +15,7 @@ pipeline {
 
         stage("Checkout App Repo") {
             steps {
-                git branch: 'main', url: 'https://github.com/Harish1685/Springboot-BankApp.git'
+                git branch: 'main', url: 'https://github.com/Md-Khursheed/Springboot-BankApp.git'
             }
         }
 
@@ -74,14 +74,14 @@ pipeline {
                 )]) {
 
                     sh '''
-                    git clone https://$GIT_USER:$GIT_PASS@github.com/Harish1685/Springboot-BankApp-GitOps.git
+                    git clone https://$GIT_USER:$GIT_PASS@github.com/Md-Khursheed/Springboot-BankApp-GitOps.git
                     
                     cd Springboot-BankApp-GitOps/kubernetes/base
                     
-                    sed -i "s|image: zorochan/bank-app:.*|image: $DOCKER_REPO:$BUILD_NUMBER|" bankapp-deployment.yml
+                    sed -i "s|image: mdkhursheed/bank-app:.*|image: $DOCKER_REPO:$BUILD_NUMBER|" bankapp-deployment.yml
                     
-                    git config user.name "Harish1685"
-                    git config user.email "kumarharish1680@gmail.com"
+                    git config user.name "Md-Khursheed"
+                    git config user.email "2mdkhursheed@gmail.com"
                     
                     git add .
                     git commit -m "Update image to $BUILD_NUMBER" || echo "No changes"
