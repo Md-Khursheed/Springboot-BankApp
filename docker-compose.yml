@@ -24,7 +24,7 @@ services:
     
 
   mainapp:
-    image: zorochan/bank-app
+    image: mdkhursheed/bank-app
     ports:
       - "8080:8080"
     networks:
