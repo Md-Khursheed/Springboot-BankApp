@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-app
+  namespace: bankapp-namespace
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: bank-app
+
+  template:
+    metadata:
+      labels:
+        app: bank-app
+
+    spec:
+      containers:
+        - name: bank-app
+          image: mdkhursheed/bank-app:18
+          ports:
+            - containerPort: 8080
+
+          envFrom:
+            - configMapRef:
+                name: bankapp-config
+
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: bank-db-secret
+                  key: SPRING_DATASOURCE_USERNAME
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bank-db-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 10
+
+
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
